@@ -1,24 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import firebase from './initFirebase';
 
-function App() {
+const App = ()=> {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const signIn = ()=>{
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(user=>{
+      console.log(user);
+      if(user){
+        fetch('http://localhost:10100/users')
+        .then(r=>r.json())
+        .then((res)=>{
+            console.log(res);
+        })
+        .catch(err=>console.log(err));
+        }
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      email: <input onChange={e=>setEmail(e.target.value)} name="email" placeholder="email"></input><br></br>
+      password: <input onChange={e=>setPassword(e.target.value)} name="password" type="password"></input>
+      <button onClick={signIn}>innskrá</button>
     </div>
   );
 }
